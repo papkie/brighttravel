@@ -24,7 +24,7 @@ const { currentStepId, status, startLocation, endLocation } = schema.tree
 router.post('/',
   token({ required: true }),
   body({ steps: {
-    type: [[Number]],
+    type: [[String]],
     index: '2d'
   }}),
   create)

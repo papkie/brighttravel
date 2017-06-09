@@ -28,8 +28,8 @@
                 <!--Status: {{call.status}} <br>-->
                 Numer telefonu: <b>{{call.user.phoneNumber}}</b> <br> Data utworzenia: <b>{{formatDate(call.createdAt)}}</b>                <br>
                 <div class="text--center" v-if="editing != i">
-                  <v-btn dark>Zaakceptuj</v-btn>
-                  <v-btn dark flat>Odrzuć</v-btn>
+                  <v-btn dark @click.native="callAction(call.id, 'accept')">Zaakceptuj</v-btn>
+                  <v-btn dark flat @click.native="callAction(call.id, 'dismiss')">Odrzuć</v-btn>
                 </div>
                 <div v-if="editing == i"> 
                 
@@ -79,6 +79,13 @@
           //   }
           // }).filter(el => !!el)
         })
+      },
+      callAction(callId, action) {
+        if (action === 'dismiss') {
+          return this.$http.delete(`calls/${callId}`).then(response => {
+
+          })
+        }
       },
       showPath(callId) {
         this.$http.get(`calls/${callId}/steps`).then(response => {

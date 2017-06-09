@@ -7,7 +7,7 @@ export const create = ({ user, bodymen: { body } }, res, next) => {
   Call.create({ ...body, user })
     .then(call => {
       const steps = body.steps.map((step, index) => Step.create({
-        location: step,
+        location: step.map(num => parseFloat(num)),
         callId: call._id,
         type: 'unknown',
         user: user._id,
