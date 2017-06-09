@@ -7,7 +7,7 @@ import { schema } from './model'
 export Call, { schema } from './model'
 
 const router = new Router()
-const { userId, currentStepId, status } = schema.tree
+const { currentStepId, status, startLocation, endLocation } = schema.tree
 
 /**
  * @api {post} /calls Create call
@@ -17,7 +17,6 @@ const { userId, currentStepId, status } = schema.tree
  * @apiParam {String} access_token user access token.
  * @apiParam userId Call's userId.
  * @apiParam currentStepId Call's currentStepId.
- * @apiParam status Call's status.
  * @apiSuccess {Object} call Call's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Call not found.
@@ -25,7 +24,7 @@ const { userId, currentStepId, status } = schema.tree
  */
 router.post('/',
   token({ required: true }),
-  body({ userId, currentStepId, status }),
+  body({ startLocation, endLocation }),
   create)
 
 /**
@@ -65,9 +64,10 @@ router.get('/:id',
  * @apiGroup Call
  * @apiPermission user
  * @apiParam {String} access_token user access token.
- * @apiParam userId Call's userId.
  * @apiParam currentStepId Call's currentStepId.
  * @apiParam status Call's status.
+ * @apiParam startLocation Call's start point.
+ * @apiParam endLocation Call's end point.
  * @apiSuccess {Object} call Call's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Call not found.
@@ -75,7 +75,7 @@ router.get('/:id',
  */
 router.put('/:id',
   token({ required: true }),
-  body({ userId, currentStepId, status }),
+  body({ currentStepId, status, startLocation, endLocation }),
   update)
 
 /**

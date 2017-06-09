@@ -8,12 +8,20 @@ const callSchema = new Schema({
   },
   currentStepId: {
     type: Schema.ObjectId,
-    ref: 'Step',
-    required: true
+    ref: 'Step'
+    // required: true
   },
   status: {
     type: String,
     enum: ['init', 'accepted', 'travel', 'finished']
+  },
+  startLocation: {
+    type: [Number],
+    index: '2d'
+  },
+  endLocation: {
+    type: [Number],
+    index: '2d'
   }
 }, {
   timestamps: true
@@ -28,7 +36,9 @@ callSchema.methods = {
       currentStepId: this.currentStepId,
       status: this.status,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
+      startLocation: this.startLocation,
+      endLocation: this.endLocation
     }
 
     return full ? {
