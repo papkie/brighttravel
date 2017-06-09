@@ -62,11 +62,25 @@ export const destroy = ({ user, params }, res, next) =>
 
 export const nextStep = ({ user, params }, res, next) => {
   Call.findById(params.id)
+    .populate('user')
+    .then(notFound(res))
+    .then((call) => call ? _.merge(call, {
+      status: 'traveling'
+    }).save() : null)
+    .then((call) => call ? call.view(true) : null)
+    .then(success(res))
+    .catch(next)
+}
+
+export const accept = ({ user, params }, res, next) => {
+  Call.findById(params.id)
+    .populate('user')
     .then(notFound(res))
     .then(authorOrAdmin(res, user, 'user'))
-    // .then((call) => {
-    //   call ? call.remove() : null
-    // })
-    .then(success(res, 204))
+    .then((call) => call ? _.merge(call, {
+      status: 'traveling'
+    }).save() : null)
+    .then((call) => call ? call.view(true) : null)
+    .then(success(res))
     .catch(next)
 }

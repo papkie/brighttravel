@@ -27,12 +27,9 @@
                 <!--Imię i nazwisko: {{call.user.name}} <br>-->
                 <!--Status: {{call.status}} <br>-->
                 Numer telefonu: <b>{{call.user.phoneNumber}}</b> <br> Data utworzenia: <b>{{formatDate(call.createdAt)}}</b>                <br>
-                <div class="text--center" v-if="editing != i">
+                <div class="text--center">
                   <v-btn dark @click.native="callAction(call.id, 'accept')">Zaakceptuj</v-btn>
                   <v-btn dark flat @click.native="callAction(call.id, 'dismiss')">Odrzuć</v-btn>
-                </div>
-                <div v-if="editing == i"> 
-                
                 </div>
               </v-card-text>
             </v-card>
@@ -83,9 +80,12 @@
       callAction(callId, action) {
         if (action === 'dismiss') {
           return this.$http.delete(`calls/${callId}`).then(response => {
-
+            this.refreshData()
           })
         }
+        return this.$http.post(`calls/${callId}/accept`).then(response => {
+            this.refreshData()          
+        })
       },
       showPath(callId) {
         this.$http.get(`calls/${callId}/steps`).then(response => {
@@ -129,7 +129,6 @@
     },
     data() {
       return {
-        editing: '',
         calls: [],
         drawer: true,
         items: [

@@ -1,6 +1,10 @@
 import _ from 'lodash'
 import { success, notFound } from '../../services/response/'
 import { User } from '.'
+import { Call } from '../call'
+import { Step } from '../step'
+import { sendPush } from '../../services/push/'
+import haversine from 'haversine'
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   User.find(query, select, cursor)
@@ -35,6 +39,31 @@ export const create = ({ bodymen: { body } }, res, next) =>
       }
     })
 
+const checkIfInRange = (user) => {
+  Call.find({
+    user: user._id,
+    status: 'traveling'
+  })
+  .then(calls => {
+    const callIds = calls.map(call => call._id)
+    return Step.find({callId: {$in: callIds}})
+  })
+  .then(steps => {
+    steps.forEach(step => {
+      const [longitude, latitude] = step.location
+      const distance = haversine({latitude, longitude}, {
+        latitude: user.location[1],
+        longitude: user.location[0]
+      })
+      if (distance < 20) {
+        Call.update({_id: step.callId}, {$set: {status: 'waiting'}}).catch(console.error)
+        sendPush('7e213cc7b830b611a9e0cd17ff80f8f3030464a357d799276c6e8aa3b9b2d9b2')
+      }
+    })
+  })
+  .catch(console.error)
+}
+
 export const update = ({ bodymen: { body }, params, user }, res, next) => {
   User.findById(params.id === 'me' ? user.id : params.id)
     .then(notFound(res))
@@ -54,6 +83,7 @@ export const update = ({ bodymen: { body }, params, user }, res, next) => {
     .then((user) => {
       if (body.location) {
         user.location = body.location
+        checkIfInRange(user)
       }
       return user ? _.merge(user, body).save() : null
     })

@@ -29,6 +29,8 @@ const config = {
     sendgridKey: requireProcessEnv('SENDGRID_KEY'),
     masterKey: requireProcessEnv('MASTER_KEY'),
     jwtSecret: requireProcessEnv('JWT_SECRET'),
+    apnCert: Buffer.from(requireProcessEnv('APN_CERT'), 'base64'),
+    apnTopic: requireProcessEnv('APN_TOPIC'),
     mongo: {
       options: {
         db: {

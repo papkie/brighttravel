@@ -20,6 +20,9 @@ Vue.http.interceptors.push((request, next) => {
     if (request.method === 'GET') {
       request.url += '?access_token=' + localStorage.getItem('token');
     } else {
+      if (!request.body) {
+        request.body = {};
+      }
       request.body['access_token'] = localStorage.getItem('token'); // eslint-disable-line
     }
   }

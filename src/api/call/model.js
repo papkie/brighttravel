@@ -13,16 +13,8 @@ const callSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['init', 'accepted', 'travel', 'waiting', 'finished'],
+    enum: ['init', 'traveling', 'waiting', 'finished'],
     default: 'init'
-  },
-  startLocation: {
-    type: [Number],
-    index: '2d'
-  },
-  endLocation: {
-    type: [Number],
-    index: '2d'
   }
 }, {
   timestamps: true
