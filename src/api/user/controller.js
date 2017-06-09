@@ -35,7 +35,7 @@ export const create = ({ bodymen: { body } }, res, next) =>
       }
     })
 
-export const update = ({ bodymen: { body }, params, user }, res, next) =>
+export const update = ({ bodymen: { body }, params, user }, res, next) => {
   User.findById(params.id === 'me' ? user.id : params.id)
     .then(notFound(res))
     .then((result) => {
@@ -51,10 +51,18 @@ export const update = ({ bodymen: { body }, params, user }, res, next) =>
       }
       return result
     })
-    .then((user) => user ? _.merge(user, body).save() : null)
-    .then((user) => user ? user.view(true) : null)
+    .then((user) => {
+      if (body.location) {
+        user.location = body.location
+      }
+      return user ? _.merge(user, body).save() : null
+    })
+    .then((user) => {
+      return user ? user.view(true) : null
+    })
     .then(success(res))
     .catch(next)
+}
 
 export const updatePassword = ({ bodymen: { body }, params, user }, res, next) =>
   User.findById(params.id === 'me' ? user.id : params.id)

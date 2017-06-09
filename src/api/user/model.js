@@ -36,7 +36,7 @@ const userSchema = new Schema({
   },
   location: {
     type: [Number],  // [<longitude>, <latitude>]
-    index: '2d'      // create the geospatial index
+    index: '2dsphere'      // create the geospatial index
   },
   phoneNumber: String,
   weight: Number,

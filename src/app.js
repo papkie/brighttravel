@@ -7,7 +7,6 @@ import {static as expressStatic} from 'express'
 import api from './api'
 
 const app = express(api)
-console.log(path.resolve('./src/web/dist'))
 app.use('/', expressStatic(path.resolve('./src/web/dist')))
 const server = http.createServer(app)
 

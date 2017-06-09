@@ -25,6 +25,7 @@
   });
  
   export default {
+    props: ['markers'],
     created() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(({coords}) => {
@@ -34,40 +35,10 @@
       } else {
         console.error("Geolocation is not supported by this browser.");
       }      
-      
-      this.refreshInterval = setInterval(() => this.refreshData(), 5000)
-    },
-    methods: {
-      refreshData() {
-        this.$http.get('calls').then(response => {
-          // console.log(response);
-          this.markers = response.body.map(caller => {
-            if (!caller.startLocation) {
-              console.warn('Empty startLocation', caller);
-              return;
-            }
-            return {
-              position: {
-                lat: caller.startLocation[1],
-                lng: caller.startLocation[0],
-              }
-            }
-          }).filter(el => !!el)
-        })
-      }
     },
     data () {
       return {
-        refreshInterval: null,
-
-        center: {lat: 10.0, lng: 10.0},
-        markers: [
-          {
-            position: {lat: 10.0, lng: 10.0}
-          }, {
-            position: {lat: 11.0, lng: 11.0}
-          }
-        ]
+        center: {lat: 54.3855788, lng: 18.6163662},
       }
     }
   }

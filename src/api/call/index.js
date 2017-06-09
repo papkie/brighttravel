@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy } from './controller'
+import { create, index, show, update, destroy, nextStep } from './controller'
 import { schema } from './model'
 export Call, { schema } from './model'
 
@@ -91,5 +91,19 @@ router.put('/:id',
 router.delete('/:id',
   token({ required: true }),
   destroy)
+
+/**
+ * @api {post} /calls/:id/nextStep Post call next step
+ * @apiName PostCallNextStep
+ * @apiGroup Call
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiSuccess (Success 204) 204 No Content.
+ * @apiError 404 Call not found.
+ * @apiError 401 user access only.
+ */
+router.post('/:id/nextStep',
+  token({ required: true }),
+  nextStep)
 
 export default router

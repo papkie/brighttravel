@@ -40,3 +40,11 @@ export const destroy = ({ user, params }, res, next) =>
     .then((call) => call ? call.remove() : null)
     .then(success(res, 204))
     .catch(next)
+
+export const nextStep = ({ user, params }, res, next) =>
+  Call.findById(params.id)
+    .then(notFound(res))
+    .then(authorOrAdmin(res, user, 'user'))
+    // .then((call) => call ? call.remove() : null)
+    .then(success(res, 204))
+    .catch(next)
