@@ -58,6 +58,9 @@ router.get('/:id',
  * @apiParam {String{6..}} password User's password.
  * @apiParam {String} [name] User's name.
  * @apiParam {String} [picture] User's picture.
+ * @apiParam {String} [phoneNumber] User's phone number.
+ * @apiParam {Number} [weight] User's weight.
+ * @apiParam {String} [info] User's additional info.
  * @apiParam {Number[]} [location] User's current location.
  * @apiSuccess (Sucess 201) {Object} user User's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
@@ -77,6 +80,9 @@ router.post('/',
  * @apiParam {String} access_token User access_token.
  * @apiParam {String} [name] User's name.
  * @apiParam {String} [picture] User's picture.
+ * @apiParam {String} [phoneNumber] User's phone number.
+ * @apiParam {Number} [weight] User's weight.
+ * @apiParam {String} [info] User's additional info.
  * @apiParam {Number[]} [location] User's current location.
  * @apiSuccess {Object} user User's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
