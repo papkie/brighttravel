@@ -13,7 +13,8 @@ const callSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ['init', 'accepted', 'travel', 'finished']
+    enum: ['init', 'accepted', 'travel', 'finished'],
+    default: 'init'
   },
   startLocation: {
     type: [Number],
