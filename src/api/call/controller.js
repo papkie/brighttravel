@@ -64,9 +64,11 @@ export const nextStep = ({ user, params }, res, next) => {
   Call.findById(params.id)
     .populate('user')
     .then(notFound(res))
-    .then((call) => call ? _.merge(call, {
-      status: 'traveling'
-    }).save() : null)
+    .then((call) => {
+      return call ? _.merge(call, {
+        status: call.status === 'waiting' ? 'withofficer' : 'traveling'
+      }).save() : null
+    })
     .then((call) => call ? call.view(true) : null)
     .then(success(res))
     .catch(next)
