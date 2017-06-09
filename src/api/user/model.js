@@ -33,6 +33,10 @@ const userSchema = new Schema({
   picture: {
     type: String,
     trim: true
+  },
+  location: {
+    type: [Number],  // [<longitude>, <latitude>]
+    index: '2d'      // create the geospatial index
   }
 }, {
   timestamps: true
@@ -66,7 +70,7 @@ userSchema.pre('save', function (next) {
 userSchema.methods = {
   view (full) {
     let view = {}
-    let fields = ['id', 'name', 'picture']
+    let fields = ['id', 'name', 'picture', 'location']
 
     if (full) {
       fields = [...fields, 'email', 'createdAt']
