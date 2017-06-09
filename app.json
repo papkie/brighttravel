@@ -1,7 +1,7 @@
 {
   "scripts": {
     "dokku": {
-      "postdeploy": "npm run postdeploy"
+      "postdeploy": "cd src/web && npm install && npm run build"
     }
   }
 }
