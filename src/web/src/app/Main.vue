@@ -25,9 +25,9 @@
             <v-card>
               <v-card-text class="grey lighten-3">
                 <!--Imię i nazwisko: {{call.user.name}} <br>-->
-                <!--Status: {{call.status}} <br>-->
+                Status: {{call.status}} <br>
                 Numer telefonu: <b>{{call.user.phoneNumber}}</b> <br> Data utworzenia: <b>{{formatDate(call.createdAt)}}</b>                <br>
-                <div class="text--center">
+                <div class="text--center" v-if="call.status == 'init'">
                   <v-btn dark @click.native="callAction(call.id, 'accept')">Zaakceptuj</v-btn>
                   <v-btn dark flat @click.native="callAction(call.id, 'dismiss')">Odrzuć</v-btn>
                 </div>
