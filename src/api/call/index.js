@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { middleware as query } from 'querymen'
 import { middleware as body } from 'bodymen'
 import { token } from '../../services/passport'
-import { create, index, show, update, destroy, nextStep } from './controller'
+import { create, index, show, showSteps, update, destroy, nextStep } from './controller'
 import { schema } from './model'
 export Call, { schema } from './model'
 
@@ -15,8 +15,7 @@ const { currentStepId, status, startLocation, endLocation } = schema.tree
  * @apiGroup Call
  * @apiPermission user
  * @apiParam {String} access_token user access token.
- * @apiParam userId Call's userId.
- * @apiParam currentStepId Call's currentStepId.
+ * @apiParam {Number[2][]} steps in lon, lat format.
  * @apiSuccess {Object} call Call's data.
  * @apiError {Object} 400 Some parameters may contain invalid values.
  * @apiError 404 Call not found.
@@ -24,7 +23,10 @@ const { currentStepId, status, startLocation, endLocation } = schema.tree
  */
 router.post('/',
   token({ required: true }),
-  body({ startLocation, endLocation }),
+  body({ steps: {
+    type: [[Number]],
+    index: '2d'
+  }}),
   create)
 
 /**
@@ -57,6 +59,21 @@ router.get('/',
 router.get('/:id',
   token({ required: true }),
   show)
+
+/**
+ * @api {get} /calls/:id Retrieve call steps
+ * @apiName RetrieveCall
+ * @apiGroup Call
+ * @apiPermission user
+ * @apiParam {String} access_token user access token.
+ * @apiSuccess {Object} call Call's data.
+ * @apiError {Object} 400 Some parameters may contain invalid values.
+ * @apiError 404 Call not found.
+ * @apiError 401 user access only.
+ */
+router.get('/:id/steps',
+  token({ required: true }),
+  showSteps)
 
 /**
  * @api {put} /calls/:id Update call

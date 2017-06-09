@@ -9,9 +9,16 @@ const stepSchema = new Schema({
   callId: {
     type: String
   },
+  order: {
+    type: Number
+  },
   type: {
     type: String,
-    enum: ['travel', 'pickup']
+    enum: ['taxi', 'other', 'unknown']
+  },
+  location: { // destination location
+    type: [Number],
+    index: '2d'
   }
 }, {
   timestamps: true

@@ -1,12 +1,24 @@
 import _ from 'lodash'
 import { success, notFound, authorOrAdmin } from '../../services/response/'
 import { Call } from '.'
+import { Step } from '../step'
 
-export const create = ({ user, bodymen: { body } }, res, next) =>
+export const create = ({ user, bodymen: { body } }, res, next) => {
   Call.create({ ...body, user })
+    .then(call => {
+      const steps = body.steps.map((step, index) => Step.create({
+        location: step,
+        callId: call._id,
+        type: 'unknown',
+        user: user._id,
+        order: index
+      }))
+      return Promise.all(steps).then(() => call)
+    })
     .then((call) => call.view(true))
     .then(success(res, 201))
     .catch(next)
+}
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   Call.find(query, select, cursor)
@@ -20,6 +32,13 @@ export const show = ({ params }, res, next) =>
     .populate('user')
     .then(notFound(res))
     .then((call) => call ? call.view() : null)
+    .then(success(res))
+    .catch(next)
+
+export const showSteps = ({ params }, res, next) =>
+  Step.find({callId: params.id})
+    .then(notFound(res))
+    .then((steps) => steps.map((step) => step.view()))
     .then(success(res))
     .catch(next)
 
@@ -41,10 +60,13 @@ export const destroy = ({ user, params }, res, next) =>
     .then(success(res, 204))
     .catch(next)
 
-export const nextStep = ({ user, params }, res, next) =>
+export const nextStep = ({ user, params }, res, next) => {
   Call.findById(params.id)
     .then(notFound(res))
     .then(authorOrAdmin(res, user, 'user'))
-    // .then((call) => call ? call.remove() : null)
+    // .then((call) => {
+    //   call ? call.remove() : null
+    // })
     .then(success(res, 204))
     .catch(next)
+}
