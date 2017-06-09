@@ -55,6 +55,7 @@ const checkIfInRange = (user) => {
         latitude: user.location[1],
         longitude: user.location[0]
       })
+      console.log(step, distance)
       if (distance < 20) {
         Call.update({_id: step.callId}, {$set: {status: 'waiting'}}).catch(console.error)
         sendPush('7e213cc7b830b611a9e0cd17ff80f8f3030464a357d799276c6e8aa3b9b2d9b2')

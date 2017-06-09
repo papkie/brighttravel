@@ -12,7 +12,7 @@ export function sendPush (target) {
   notification.badge = 1
   notification.topic = config.apnTopic
   provider.send(notification, [target]).then((response) => {
-    // console.log(response)
+    console.log(response)
     // response.sent: Array of device tokens to which the notification was sent succesfully
     // response.failed: Array of objects containing the device token (`device`) and either an `error`, or a `status` and `response` from the API
   })
