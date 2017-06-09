@@ -7,7 +7,8 @@ import {static as expressStatic} from 'express'
 import api from './api'
 
 const app = express(api)
-app.use(expressStatic(path.resolve('src/web/dist')))
+console.log(path.resolve('./src/web/dist'))
+app.use(expressStatic(path.resolve('./web/dist')))
 const server = http.createServer(app)
 
 mongoose.connect(mongo.uri)
