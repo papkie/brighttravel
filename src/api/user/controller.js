@@ -60,6 +60,7 @@ const checkIfInRange = (user) => {
       })
       if (distance < 5) {
         console.log('finished', lastStep, distance)
+        sendPush('7e213cc7b830b611a9e0cd17ff80f8f3030464a357d799276c6e8aa3b9b2d9b2', 'Osoba dotarła bezpiecznie')
         return Call.update({_id: lastStep.callId}, {$set: {status: 'finished'}}).catch(console.error)
       }
     }

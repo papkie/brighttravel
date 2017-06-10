@@ -6,9 +6,9 @@ const provider = new apn.Provider({
   production: false
 })
 
-export function sendPush (target) {
+export function sendPush (target, message) {
   const notification = new apn.Notification()
-  notification.alert = 'Nowa osoba potrzebuje twojej pomocy!'
+  notification.alert = message || 'Nowa osoba potrzebuje twojej pomocy!'
   notification.badge = 1
   notification.topic = config.apnTopic
   provider.send(notification, [target]).then((response) => {
