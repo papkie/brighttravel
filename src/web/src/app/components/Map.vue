@@ -8,7 +8,6 @@
       v-for="(m, index) in markers"
       :position="m.position"
       :clickable="true"
-      :draggable="true"
       @click="center=m.position"
     ></gmap-marker>
   </gmap-map>
@@ -25,7 +24,7 @@
   });
  
   export default {
-    props: ['markers'],
+    props: ['markers', 'center'],
     created() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(({coords}) => {
@@ -38,7 +37,7 @@
     },
     data () {
       return {
-        center: {lat: 54.3855788, lng: 18.6163662},
+
       }
     }
   }

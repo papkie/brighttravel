@@ -26,7 +26,11 @@
               <v-card-text class="grey lighten-3">
                 <!--Imię i nazwisko: {{call.user.name}} <br>-->
                 Status: {{call.status}} <br>
-                Numer telefonu: <b>{{call.user.phoneNumber}}</b> <br> Data utworzenia: <b>{{formatDate(call.createdAt)}}</b>                <br>
+                Numer telefonu: <b>{{call.user.phoneNumber}}</b> <br> Data utworzenia: <b>{{formatDate(call.createdAt)}}</b>                
+                <br>
+                <div v-for="(stepLiteral, stepId) in calls.stepsLiteral">
+                  {{stepId+1}}. {{stepLiteral}}
+                </div>
                 <div class="text--center" v-if="call.status == 'init'">
                   <v-btn dark @click.native="callAction(call.id, 'accept')">Zaakceptuj</v-btn>
                   <v-btn dark flat @click.native="callAction(call.id, 'dismiss')">Odrzuć</v-btn>
@@ -39,7 +43,7 @@
     </v-navigation-drawer>
     <main>
       <v-container fluid class="pa-0">
-        <map-component :markers="markers" style="width: 100%; height: calc(100vh);"></map-component>
+        <map-component :markers="markers" :center="center" style="width: 100%; height: calc(100vh);"></map-component>
       </v-container>
     </main>
   </v-app>
@@ -89,9 +93,11 @@
       },
       showPath(callId) {
         this.$http.get(`calls/${callId}/steps`).then(response => {
-          // console.log(response);
+          console.log(response.body);
           const steps = response.body;
-          console.log(steps);
+          const [lng, lat] = steps[0].location
+          this.center = {lat, lng}
+          // this.markers = steps
           // this.calls = response.body
           // .map(caller => {
           //   if (!caller.startLocation) {
@@ -129,6 +135,7 @@
     },
     data() {
       return {
+        center: {lat: 54.3855788, lng: 18.6163662},
         calls: [],
         drawer: true,
         items: [

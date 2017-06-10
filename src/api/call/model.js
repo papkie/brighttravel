@@ -15,6 +15,9 @@ const callSchema = new Schema({
     type: String,
     enum: ['init', 'traveling', 'withofficer', 'waiting', 'finished'],
     default: 'init'
+  },
+  stepsLiteral: {
+    type: [String]
   }
 }, {
   timestamps: true
@@ -28,10 +31,9 @@ callSchema.methods = {
       user: this.user.view(full),
       currentStepId: this.currentStepId,
       status: this.status,
+      stepsLiteral: this.stepsLiteral,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-      startLocation: this.startLocation,
-      endLocation: this.endLocation
+      updatedAt: this.updatedAt
     }
 
     return full ? {

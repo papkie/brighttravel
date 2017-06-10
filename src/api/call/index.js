@@ -7,7 +7,7 @@ import { schema } from './model'
 export Call, { schema } from './model'
 
 const router = new Router()
-const { currentStepId, status, startLocation, endLocation } = schema.tree
+const { currentStepId, status, startLocation, endLocation, stepsLiteral } = schema.tree
 
 /**
  * @api {post} /calls Create call
@@ -23,10 +23,13 @@ const { currentStepId, status, startLocation, endLocation } = schema.tree
  */
 router.post('/',
   token({ required: true }),
-  body({ steps: {
-    type: [[String]],
-    index: '2d'
-  }}),
+  body({
+    steps: {
+      type: [[String]],
+      index: '2d'
+    },
+    stepsLiteral
+  }),
   create)
 
 /**
@@ -92,7 +95,7 @@ router.get('/:id/steps',
  */
 router.put('/:id',
   token({ required: true }),
-  body({ currentStepId, status, startLocation, endLocation }),
+  body({ currentStepId, status, startLocation, endLocation, stepsLiteral }),
   update)
 
 /**

@@ -32,6 +32,7 @@ stepSchema.methods = {
       user: this.user.view(full),
       callId: this.callId,
       type: this.type,
+      location: this.location,
       createdAt: this.createdAt,
       updatedAt: this.updatedAt
     }

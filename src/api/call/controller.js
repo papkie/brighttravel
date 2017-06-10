@@ -46,6 +46,7 @@ export const show = ({ params }, res, next) =>
 
 export const showSteps = ({ params }, res, next) =>
   Step.find({callId: params.id})
+    .populate('user')
     .then(notFound(res))
     .then((steps) => steps.map((step) => step.view()))
     .then(success(res))
