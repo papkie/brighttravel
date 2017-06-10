@@ -27,7 +27,6 @@ const stepSchema = new Schema({
 stepSchema.methods = {
   view (full) {
     const view = {
-      // simple view
       id: this.id,
       user: this.user.view(full),
       callId: this.callId,
