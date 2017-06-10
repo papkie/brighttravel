@@ -66,7 +66,7 @@
       refreshData() {
         this.$http.get('calls').then(response => {
           // console.log(response);
-          this.calls = response.body
+          this.calls = response.body.filter(call => call.status != 'finished')
           // this.markers = this.calls.map(call => {
           //   if (!call.user.location) {
           //     console.warn('Empty location', call);
