@@ -28,7 +28,7 @@
                 Status: {{call.status}} <br>
                 Numer telefonu: <b>{{call.user.phoneNumber}}</b> <br> Data utworzenia: <b>{{formatDate(call.createdAt)}}</b>                
                 <br>
-                <div v-for="(stepLiteral, stepId) in calls.stepsLiteral">
+                <div v-for="(stepLiteral, stepId) in call.stepsLiteral">
                   {{stepId+1}}. {{stepLiteral}}
                 </div>
                 <div class="text--center" v-if="call.status == 'init'">
@@ -67,6 +67,18 @@
         this.$http.get('calls').then(response => {
           // console.log(response);
           this.calls = response.body
+          // this.markers = this.calls.map(call => {
+          //   if (!call.user.location) {
+          //     console.warn('Empty location', call);
+          //     return;
+          //   }
+          //   return {
+          //     position: {
+          //       lat: call.user.location[1],
+          //       lng: call.user.location[0],
+          //     }
+          //   }
+          // }).filter(el => !!el)
           // .map(caller => {
           //   if (!caller.startLocation) {
           //     console.warn('Empty startLocation', caller);
@@ -97,6 +109,14 @@
           const steps = response.body;
           const [lng, lat] = steps[0].location
           this.center = {lat, lng}
+          this.markers = response.body.map(step => {
+            return {
+              position: {
+                lat: step.location[1],
+                lng: step.location[0],
+              }
+            }
+          }).filter(el => !!el)
           // this.markers = steps
           // this.calls = response.body
           // .map(caller => {
@@ -118,25 +138,12 @@
       }
     },
     computed: {
-      markers() {
-        return this.calls.map(call => {
-            if (!call.user.location) {
-              console.warn('Empty location', call);
-              return;
-            }
-            return {
-              position: {
-                lat: call.user.location[1],
-                lng: call.user.location[0],
-              }
-            }
-          }).filter(el => !!el)
-      }
     },
     data() {
       return {
         center: {lat: 54.3855788, lng: 18.6163662},
         calls: [],
+        markers: [],
         drawer: true,
         items: [
           // {

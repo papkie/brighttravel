@@ -1,7 +1,7 @@
 <template>
   <gmap-map
     :center="center"
-    :zoom="12"
+    :zoom="6"
   >
     <gmap-marker
       :key="index"
