@@ -13,7 +13,15 @@ export const create = ({ user, bodymen: { body } }, res, next) => {
         user: user._id,
         order: index
       }))
-      return Promise.all(steps).then(() => call)
+      return Promise.all(steps)
+    })
+    .then((steps) => {
+      const step = steps[0]
+      return Call.findById(step.callId)
+      .then(call => {
+        call.currentStepId = step._id
+        return call.save()
+      })
     })
     .then((call) => call.view(true))
     .then(success(res, 201))
@@ -22,6 +30,7 @@ export const create = ({ user, bodymen: { body } }, res, next) => {
 
 export const index = ({ querymen: { query, select, cursor } }, res, next) =>
   Call.find(query, select, cursor)
+    .sort({createdAt: -1})
     .populate('user')
     .then((calls) => calls.map((call) => call.view()))
     .then(success(res))
@@ -65,9 +74,23 @@ export const nextStep = ({ user, params }, res, next) => {
     .populate('user')
     .then(notFound(res))
     .then((call) => {
-      return call ? _.merge(call, {
-        status: call.status === 'waiting' ? 'withofficer' : 'traveling'
-      }).save() : null
+      return Step.findOne({
+        _id: call.currentStepId
+      })
+      .then(currentStep => {
+        return Step.findOne({
+          callId: call._id,
+          order: {$gt: currentStep.order}
+        }).sort({order: 1})
+      }).then(step => {
+        if (!step) {
+          call.status = 'finished'
+        } else {
+          call.status = call.status === 'waiting' ? 'withofficer' : 'traveling'
+          call.currentStepId = step._id
+        }
+        return call.save()
+      })
     })
     .then((call) => call ? call.view(true) : null)
     .then(success(res))
@@ -79,9 +102,11 @@ export const accept = ({ user, params }, res, next) => {
     .populate('user')
     .then(notFound(res))
     .then(authorOrAdmin(res, user, 'user'))
-    .then((call) => call ? _.merge(call, {
-      status: 'traveling'
-    }).save() : null)
+    .then((call) => {
+      return call ? _.merge(call, {
+        status: 'traveling'
+      }).save() : null
+    })
     .then((call) => call ? call.view(true) : null)
     .then(success(res))
     .catch(next)
