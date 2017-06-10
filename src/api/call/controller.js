@@ -74,23 +74,26 @@ export const nextStep = ({ user, params }, res, next) => {
     .populate('user')
     .then(notFound(res))
     .then((call) => {
-      return Step.findOne({
-        _id: call.currentStepId
-      })
-      .then(currentStep => {
-        return Step.findOne({
-          callId: call._id,
-          order: {$gt: currentStep.order}
-        }).sort({order: 1})
-      }).then(step => {
-        if (!step) {
-          call.status = 'finished'
-        } else {
-          call.status = call.status === 'waiting' ? 'withofficer' : 'traveling'
-          call.currentStepId = step._id
-        }
+      if (call.status === 'waiting') {
+        call.status = 'withofficer'
         return call.save()
-      })
+      } else {
+        return Step.findOne({
+          _id: call.currentStepId
+        })
+        .then(currentStep => {
+          return Step.findOne({
+            callId: call._id,
+            order: {$gt: currentStep.order}
+          }).sort({order: 1})
+        }).then(step => {
+          if (step) {
+            call.status = call.status === 'waiting' ? 'withofficer' : 'traveling'
+            call.currentStepId = step._id
+          }
+          return call.save()
+        })
+      }
     })
     .then((call) => call ? call.view(true) : null)
     .then(success(res))

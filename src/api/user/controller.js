@@ -40,27 +40,41 @@ export const create = ({ bodymen: { body } }, res, next) =>
     })
 
 const checkIfInRange = (user) => {
-  Call.find({
+  Call.findOne({
     user: user._id,
     status: 'traveling'
   })
-  .then(calls => {
-    const callIds = calls.map(call => call._id)
-    return Step.find({callId: {$in: callIds}})
+  .sort({
+    createdAt: -1
+  })
+  .then(call => {
+    return Step.find({callId: call._id})
   })
   .then(steps => {
-    steps.forEach(step => {
-      const [longitude, latitude] = step.location
+    const lastStep = steps.slice(-1)[0]
+    if (lastStep) {
+      const [longitude, latitude] = lastStep.location
       const distance = haversine({latitude, longitude}, {
         latitude: user.location[1],
         longitude: user.location[0]
       })
-      console.log(step, distance)
-      if (distance < 20) {
-        Call.update({_id: step.callId}, {$set: {status: 'waiting'}}).catch(console.error)
-        sendPush('7e213cc7b830b611a9e0cd17ff80f8f3030464a357d799276c6e8aa3b9b2d9b2')
+      console.log(lastStep, distance)
+      if (distance < 5) {
+        Call.update({_id: lastStep.callId}, {$set: {status: 'finished'}}).catch(console.error)
       }
-    })
+    } else {
+      steps.forEach(step => {
+        const [longitude, latitude] = step.location
+        const distance = haversine({latitude, longitude}, {
+          latitude: user.location[1],
+          longitude: user.location[0]
+        })
+        console.log(step, distance)
+        if (distance < 5) {
+          Call.update({_id: step.callId}, {$set: {status: 'waiting'}}).catch(console.error)
+        }
+      })
+    }
   })
   .catch(console.error)
 }
